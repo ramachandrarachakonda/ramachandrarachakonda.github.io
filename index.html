@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramachandra Rao Rachakonda | Senior Site Reliability Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gh: {
+                            bg: '#0d1117',
+                            canvas: '#161b22',
+                            border: '#30363d',
+                            header: '#010409',
+                            text: '#c9d1d9',
+                            muted: '#8b949e',
+                            green: '#238636',
+                            brightGreen: '#3fb950',
+                            blue: '#58a6ff',
+                            purple: '#bc8cff',
+                            red: '#f85149',
+                            orange: '#d29922'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism effects */
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(48, 54, 61, 0.8);
+        }
+
+        .glass-card {
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid #30363d;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: #58a6ff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px -10px rgba(88, 166, 255, 0.15);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        /* Glow effects */
+        .glow-green {
+            box-shadow: 0 0 20px rgba(63, 185, 80, 0.35);
+        }
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.35);
+        }
+        .glow-purple {
+            box-shadow: 0 0 20px rgba(188, 140, 255, 0.35);
+        }
+
+        /* Scanline animation */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.6), transparent);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Pulse status light */
+        .pulse-dot {
+            position: relative;
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.8); opacity: 0; }
+            100% { transform: scale(0.95); opacity: 0; }
+        }
+
+        /* Floating effect */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Reveal on scroll base class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Grid Heatmap cell styling */
+        .contrib-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        .contrib-cell:hover {
+            transform: scale(1.3);
+            z-index: 10;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+
+    <!-- Interactive Background Canvas (Telemetry & Server Topology Graph) -->
+    <canvas id="telemetryCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- Header / Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-gh-border px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="#hero" class="flex items-center space-x-2 text-white hover:text-gh-blue transition-colors">
+                    <i class="fa-brands fa-github text-2xl"></i>
+                    <span class="font-mono font-bold text-sm md:text-base tracking-tight">ramachandra-rao<span class="text-gh-blue">/sre-core</span></span>
+                </a>
+                <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-mono bg-gh-border text-gh-text rounded-full border border-gray-700">v13.4.0-prod</span>
+            </div>
+
+            <!-- Desktop Nav Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#about" class="text-gh-muted hover:text-white transition-colors flex items-center gap-1.5"><i class="fa-solid fa-user-gear text-xs text-gh-blue"></i> Profile</a>
+                <a href="#telemetry" class="text-gh-muted hover:text-white transition-colors flex items-center gap-1.5"><i class="fa-solid fa-chart-line text-xs text-gh-brightGreen"></i> Metrics</a>
+                <a href="#terminal" class="text-gh-muted hover:text-white transition-colors flex items-center gap-1.5"><i class="fa-solid fa-terminal text-xs text-gh-purple"></i> CLI Terminal</a>
+                <a href="#skills" class="text-gh-muted hover:text-white transition-colors flex items-center gap-1.5"><i class="fa-solid fa-microchip text-xs text-gh-orange"></i> Skills</a>
+                <a href="#experience" class="text-gh-muted hover:text-white transition-colors flex items-center gap-1.5"><i class="fa-solid fa-server text-xs text-gh-blue"></i> Experience</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 bg-gh-canvas border border-gh-border px-3 py-1.5 rounded-full">
+                    <span class="w-2.5 h-2.5 rounded-full bg-gh-brightGreen pulse-dot"></span>
+                    <span class="text-xs font-mono text-gh-brightGreen font-semibold">ALL SYSTEMS NOMINAL</span>
+                </div>
+                <a href="mailto:ramachandra.rachakonda@gmail.com" class="hidden sm:inline-flex items-center gap-2 bg-gh-green hover:bg-gh-brightGreen text-white text-xs font-semibold px-3 py-2 rounded-md transition-all shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i> Contact
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 space-y-16">
+
+        <!-- Hero Section -->
+        <section id="hero" class="pt-4 pb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Sidebar: Profile Card -->
+                <div class="lg:col-span-4 glass-card rounded-2xl p-6 border border-gh-border flex flex-col items-center lg:items-start text-center lg:text-left relative overflow-hidden">
+                    <div class="scanline"></div>
+                    
+                    <!-- Avatar Frame -->
+                    <div class="relative mb-5 group">
+                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-tr from-gh-blue via-gh-purple to-gh-brightGreen p-1 shadow-xl">
+                            <div class="w-full h-full rounded-full bg-gh-canvas flex items-center justify-center overflow-hidden relative">
+                                <i class="fa-solid fa-user-shield text-5xl text-gh-blue group-hover:scale-110 transition-transform duration-300"></i>
+                            </div>
+                        </div>
+                        <span class="absolute bottom-1 right-2 bg-gh-canvas border border-gh-border p-2 rounded-full text-gh-brightGreen text-sm shadow-lg" title="Live Operations Active">
+                            <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+                        </span>
+                    </div>
+
+                    <!-- Identity -->
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Ramachandra Rao Rachakonda</h1>
+                    <p class="text-gh-blue font-mono font-medium text-sm mt-1">@ramachandra-sre</p>
+                    
+                    <div class="inline-flex items-center gap-2 my-3 px-3 py-1 rounded-md bg-gh-canvas border border-gh-border text-xs text-gh-text font-mono">
+                        <i class="fa-solid fa-shield-halved text-gh-brightGreen"></i> Sr. Site Reliability Engineer
+                    </div>
+
+                    <p class="text-xs md:text-sm text-gh-muted mt-2 leading-relaxed">
+                        12+ years optimizing enterprise reliability, live-site operations, observability, and automated incident mitigation across Microsoft Azure platforms.
+                    </p>
+
+                    <div class="w-full border-t border-gh-border my-5"></div>
+
+                    <!-- Quick Details -->
+                    <div class="w-full space-y-2.5 text-xs md:text-sm text-gh-text">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-location-dot w-4 text-center text-gh-muted"></i>
+                            <span>Redmond, WA (USA)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope w-4 text-center text-gh-muted"></i>
+                            <a href="mailto:ramachandra.rachakonda@gmail.com" class="hover:text-gh-blue transition-colors truncate">ramachandra.rachakonda@gmail.com</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone w-4 text-center text-gh-muted"></i>
+                            <span>(425) 628-7173</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-building w-4 text-center text-gh-muted"></i>
+                            <span>Microsoft Commercial Engg.</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-passport w-4 text-center text-gh-muted"></i>
+                            <span class="text-gh-purple font-mono">H1B / B1 Visa Holder</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="w-full mt-6 grid grid-cols-2 gap-2">
+                        <a href="mailto:ramachandra.rachakonda@gmail.com" class="flex items-center justify-center gap-2 bg-gh-canvas hover:bg-gh-border text-white text-xs font-semibold py-2.5 px-3 rounded-lg border border-gh-border transition-all">
+                            <i class="fa-solid fa-envelope"></i> Email Me
+                        </a>
+                        <button onclick="copyContactInfo()" class="flex items-center justify-center gap-2 bg-gh-canvas hover:bg-gh-border text-white text-xs font-semibold py-2.5 px-3 rounded-lg border border-gh-border transition-all">
+                            <i class="fa-solid fa-copy" id="copyIcon"></i> <span id="copyText">Copy Info</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Hero Details: Live Incident Simulator & Summary -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- SRE Hero Header Card -->
+                    <div class="glass-card rounded-2xl p-6 border border-gh-border relative overflow-hidden">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gh-border">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-blue-950 text-gh-blue border border-blue-800">Telemetry Engine</span>
+                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-950 text-gh-brightGreen border border-emerald-800">SLO SLA 99.99%</span>
+                                </div>
+                                <h2 class="text-xl md:text-2xl font-bold text-white mt-2">Cloud Reliability, Observability & Live-Site Operations</h2>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a href="#terminal" class="px-3 py-2 rounded-md bg-gh-canvas border border-gh-border text-xs text-gh-text hover:border-gh-blue transition-all flex items-center gap-2 font-mono">
+                                    <i class="fa-solid fa-terminal text-gh-brightGreen"></i> Launch Shell
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Core Value Paragraph -->
+                        <p class="text-sm md:text-base text-gh-text leading-relaxed mt-4">
+                            Senior Site Reliability Engineer with <strong class="text-white">12+ years of hands-on experience</strong> architecting, maintaining, and supporting resilient enterprise platforms, including <strong class="text-white">13+ years across Microsoft ecosystem deployments</strong>. Expert in high-severity incident leadership, automated mitigation, telemetry instrumentation, KQL diagnostics, and continuous SLO attainment.
+                        </p>
+
+                        <!-- Highlights Pills -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                            <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                                <div class="text-xs text-gh-muted font-mono">Platform Volume</div>
+                                <div class="text-lg font-bold text-white mt-0.5">50M+ / Day</div>
+                                <div class="text-[10px] text-gh-brightGreen font-mono mt-1"><i class="fa-solid fa-check-circle"></i> High Throughput</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                                <div class="text-xs text-gh-muted font-mono">Toil Reduction</div>
+                                <div class="text-lg font-bold text-gh-brightGreen mt-0.5">~50% Effort</div>
+                                <div class="text-[10px] text-gh-muted font-mono mt-1">PowerShell & REST API</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                                <div class="text-xs text-gh-muted font-mono">Incident Leadership</div>
+                                <div class="text-lg font-bold text-gh-blue mt-0.5">Sev-1 & Sev-2</div>
+                                <div class="text-[10px] text-gh-muted font-mono mt-1">RCA & Post-Mortems</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                                <div class="text-xs text-gh-muted font-mono">Awards & Honors</div>
+                                <div class="text-lg font-bold text-gh-purple mt-0.5">7x ACE Awards</div>
+                                <div class="text-[10px] text-gh-purple font-mono mt-1">+2x Livewire Honors</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Live-Site Incident & Response Simulator Widget -->
+                    <div class="glass-card rounded-2xl p-6 border border-gh-border relative">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-heart-pulse text-gh-brightGreen animate-pulse"></i>
+                                <h3 class="font-bold text-white text-sm md:text-base">Live-Site Operations Control Center (Interactive Simulator)</h3>
+                            </div>
+                            <span class="text-xs font-mono text-gh-muted">Environment: AKS Prod EastUS</span>
+                        </div>
+
+                        <!-- Dashboard Grid Inside Widget -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Metric 1 -->
+                            <div class="bg-gh-canvas p-3.5 rounded-xl border border-gh-border">
+                                <div class="flex justify-between items-center text-xs text-gh-muted mb-1">
+                                    <span>Cluster API Latency</span>
+                                    <span id="latencyValue" class="font-mono text-gh-brightGreen">24ms</span>
+                                </div>
+                                <div class="w-full bg-gh-border h-2 rounded-full overflow-hidden">
+                                    <div id="latencyBar" class="bg-gh-brightGreen h-full transition-all duration-500" style="width: 25%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Metric 2 -->
+                            <div class="bg-gh-canvas p-3.5 rounded-xl border border-gh-border">
+                                <div class="flex justify-between items-center text-xs text-gh-muted mb-1">
+                                    <span>Error Budget Remaining</span>
+                                    <span id="errorBudget" class="font-mono text-gh-blue">99.98%</span>
+                                </div>
+                                <div class="w-full bg-gh-border h-2 rounded-full overflow-hidden">
+                                    <div id="errorBar" class="bg-gh-blue h-full transition-all duration-500" style="width: 98%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Metric 3 -->
+                            <div class="bg-gh-canvas p-3.5 rounded-xl border border-gh-border">
+                                <div class="flex justify-between items-center text-xs text-gh-muted mb-1">
+                                    <span>KQL Telemetry Stream</span>
+                                    <span class="font-mono text-gh-purple">12.4k ops/s</span>
+                                </div>
+                                <div class="w-full bg-gh-border h-2 rounded-full overflow-hidden">
+                                    <div class="bg-gh-purple h-full animate-pulse" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Incident Console Log Box -->
+                        <div class="mt-4 bg-black/80 rounded-xl p-3 border border-gh-border font-mono text-xs h-24 overflow-y-auto space-y-1" id="simulatorLog">
+                            <p class="text-gh-muted">[00:00:01] System telemetry nominal. Monitoring AKS pods & Azure Event Grid.</p>
+                            <p class="text-gh-brightGreen">[00:00:05] Azure Monitor KQL stream healthy. SLO metrics at 99.99%.</p>
+                        </div>
+
+                        <!-- Simulator Interactive Controls -->
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button onclick="triggerSimulatedIncident()" class="px-3 py-1.5 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-gh-red text-xs font-semibold font-mono transition-all">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Trigger Incident
+                            </button>
+                            <button onclick="runAutoMitigation()" class="px-3 py-1.5 rounded-lg bg-blue-950 hover:bg-blue-900 border border-blue-800 text-gh-blue text-xs font-semibold font-mono transition-all">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Mitigate (AI Ops)
+                            </button>
+                            <button onclick="resetSimulator()" class="px-3 py-1.5 rounded-lg bg-gh-canvas hover:bg-gh-border border border-gh-border text-gh-muted text-xs font-semibold font-mono transition-all">
+                                <i class="fa-solid fa-rotate-right"></i> Reset Stream
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulated GitHub Contribution & Live-Site Activity Heatmap Grid -->
+        <section id="telemetry" class="reveal">
+            <div class="glass-card rounded-2xl p-6 border border-gh-border">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-gh-brightGreen"></i>
+                            <h3 class="text-lg font-bold text-white">52-Week Live-Site Reliability & SRE Activity Grid</h3>
+                        </div>
+                        <p class="text-xs text-gh-muted mt-1">Simulated yearly operational deployments, incident responses, and automated fixes.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono">
+                        <span class="text-gh-muted">Less</span>
+                        <span class="w-3 h-3 rounded-sm bg-[#161b22] border border-gh-border"></span>
+                        <span class="w-3 h-3 rounded-sm bg-[#0e4429]"></span>
+                        <span class="w-3 h-3 rounded-sm bg-[#006d32]"></span>
+                        <span class="w-3 h-3 rounded-sm bg-[#26a641]"></span>
+                        <span class="w-3 h-3 rounded-sm bg-[#39d353]"></span>
+                        <span class="text-gh-muted">More</span>
+                    </div>
+                </div>
+
+                <!-- Scrollable Grid Container -->
+                <div class="overflow-x-auto pb-2">
+                    <div id="heatmapGrid" class="grid grid-flow-col grid-rows-7 gap-1 min-w-[750px]">
+                        <!-- Dynamic JS grid inserted here -->
+                    </div>
+                </div>
+
+                <!-- Stats Footer -->
+                <div class="mt-4 pt-4 border-t border-gh-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-xs text-gh-muted">Total Live-Site Events</div>
+                        <div class="text-base font-bold text-white font-mono mt-0.5">2,847</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gh-muted">Continuous Uptime Streak</div>
+                        <div class="text-base font-bold text-gh-brightGreen font-mono mt-0.5">365 Days</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gh-muted">RCA & Post-Mortems</div>
+                        <div class="text-base font-bold text-gh-blue font-mono mt-0.5">100% Resolved</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gh-muted">Pipeline Deployments</div>
+                        <div class="text-base font-bold text-gh-purple font-mono mt-0.5">1,420+ Ev2/YAML</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Terminal Widget -->
+        <section id="terminal" class="reveal">
+            <div class="glass-card rounded-2xl overflow-hidden border border-gh-border shadow-2xl">
+                <!-- Terminal Titlebar -->
+                <div class="bg-[#161b22] px-4 py-3 border-b border-gh-border flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                        <span class="text-xs font-mono text-gh-muted ml-2">bash — ramachandra@sre-redmond-node01:~</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-xs text-gh-muted font-mono">
+                        <span><i class="fa-solid fa-server text-gh-blue"></i> Azure AKS</span>
+                        <span><i class="fa-solid fa-shield text-gh-brightGreen"></i> S360 Compliant</span>
+                    </div>
+                </div>
+
+                <!-- Terminal Body -->
+                <div class="p-4 md:p-6 bg-[#090d13] font-mono text-xs md:text-sm text-gh-text space-y-4 min-h-[360px] max-h-[500px] overflow-y-auto" id="terminalOutput">
+                    <div>
+                        <span class="text-gh-brightGreen">ramachandra@sre-hub</span>:<span class="text-gh-blue">~</span>$ <span class="text-white">welcome --help</span>
+                        <p class="text-gh-muted mt-1 leading-relaxed">
+                            Welcome to Ramachandra Rao Rachakonda's Interactive SRE Terminal v2.4.<br>
+                            Type <span class="text-gh-brightGreen font-bold">'help'</span> to view available operations or click command buttons below.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Terminal Quick Command Bar -->
+                <div class="p-3 bg-gh-canvas border-t border-gh-border flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-mono text-gh-muted mr-1">Quick Commands:</span>
+                    <button onclick="executeTerminalCommand('sre-healthcheck')" class="px-2.5 py-1 rounded bg-gh-border hover:bg-gh-blue hover:text-black text-xs font-mono transition-all">sre-healthcheck</button>
+                    <button onclick="executeTerminalCommand('kubectl get pods')" class="px-2.5 py-1 rounded bg-gh-border hover:bg-gh-blue hover:text-black text-xs font-mono transition-all">kubectl get pods</button>
+                    <button onclick="executeTerminalCommand('az monitor query')" class="px-2.5 py-1 rounded bg-gh-blue/20 text-gh-blue hover:bg-gh-blue hover:text-black text-xs font-mono transition-all">az monitor query</button>
+                    <button onclick="executeTerminalCommand('cat experience.json')" class="px-2.5 py-1 rounded bg-gh-border hover:bg-gh-blue hover:text-black text-xs font-mono transition-all">cat experience.json</button>
+                    <button onclick="executeTerminalCommand('clear')" class="px-2.5 py-1 rounded bg-gh-border hover:bg-gh-red hover:text-white text-xs font-mono transition-all">clear</button>
+                </div>
+
+                <!-- Input Prompt -->
+                <form onsubmit="handleTerminalSubmit(event)" class="flex items-center px-4 py-3 bg-[#0d1117] border-t border-gh-border">
+                    <span class="text-gh-brightGreen font-mono text-xs md:text-sm mr-2">ramachandra@sre-hub:~$</span>
+                    <input type="text" id="terminalInput" autocomplete="off" placeholder="Type a command (e.g. help, sre-healthcheck, kubectl, contact)..." class="flex-1 bg-transparent border-none outline-none font-mono text-xs md:text-sm text-white placeholder-gh-muted">
+                    <button type="submit" class="text-gh-blue text-xs font-mono hover:text-white px-2">RUN <i class="fa-solid fa-play text-[10px]"></i></button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Core Competencies & Skills Section -->
+        <section id="skills" class="reveal space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-gh-blue text-xl"></i>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Technical Core & Reliability Stack</h2>
+                    </div>
+                    <p class="text-xs md:text-sm text-gh-muted mt-1">Interactive taxonomy of operational domains, cloud services, and tools.</p>
+                </div>
+
+                <!-- Skill Filter Buttons -->
+                <div class="flex flex-wrap gap-2" id="skillFilters">
+                    <button onclick="filterSkills('all')" class="skill-filter-btn active px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-blue text-black font-semibold transition-all">All Domains</button>
+                    <button onclick="filterSkills('sre')" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-canvas text-gh-muted border border-gh-border hover:text-white transition-all">SRE & Incident</button>
+                    <button onclick="filterSkills('observability')" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-canvas text-gh-muted border border-gh-border hover:text-white transition-all">Observability</button>
+                    <button onclick="filterSkills('azure')" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-canvas text-gh-muted border border-gh-border hover:text-white transition-all">Cloud & K8s</button>
+                    <button onclick="filterSkills('automation')" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-canvas text-gh-muted border border-gh-border hover:text-white transition-all">Automation & CI/CD</button>
+                </div>
+            </div>
+
+            <!-- Skills Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="skillsGrid">
+                
+                <!-- Skill Card 1 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="sre">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-gh-brightGreen">
+                                <i class="fa-solid fa-shield-cat"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">Site Reliability & Ops</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-gh-brightGreen border border-emerald-800">Core</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-brightGreen"></i> SRE, SLOs, SLIs & Error Budgets</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-brightGreen"></i> High-Severity Incident Command (Sev-1/2)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-brightGreen"></i> Post-Incident Reviews (PIR) & RCA</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-brightGreen"></i> Corrective & Preventive Actions (CAPA)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-brightGreen"></i> On-Call 24/7 Production Support</li>
+                    </ul>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="observability">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-blue-950/80 border border-blue-800 flex items-center justify-center text-gh-blue">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">Observability & Data</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-gh-blue border border-blue-800">MELT</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-blue"></i> Azure Monitor & Application Insights</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-blue"></i> KQL (Kusto Query Language) Deep Analytics</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-blue"></i> Prometheus & Grafana Dashboards</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-blue"></i> Power BI Operational Telemetry</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-blue"></i> Proactive Alerting & Signal Processing</li>
+                    </ul>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="azure">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-sky-950/80 border border-sky-800 flex items-center justify-center text-sky-400">
+                                <i class="fa-brands fa-microsoft"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">Cloud & Distributed Systems</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-sky-400 border border-sky-800">Azure</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-sky-400"></i> Azure Kubernetes Service (AKS) & Helm</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-sky-400"></i> Azure Cosmos DB & Azure SQL</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-sky-400"></i> Azure Service Bus & Event Grid</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-sky-400"></i> Azure Storage & Blob Infrastructure</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-sky-400"></i> Azure Functions & Serverless Architecture</li>
+                    </ul>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="automation">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-purple-950/80 border border-purple-800 flex items-center justify-center text-gh-purple">
+                                <i class="fa-solid fa-code-branch"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">DevOps & Automation</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-gh-purple border border-purple-800">CI/CD</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-purple"></i> Azure DevOps YAML & Release Pipelines</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-purple"></i> Ev2 Deployment Engine Architecture</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-purple"></i> Terraform IaC & Azure Resource Mgmt</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-purple"></i> PowerShell & REST API Automation</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-purple"></i> Playwright Automated E2E Testing</li>
+                    </ul>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="sre">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-amber-950/80 border border-amber-800 flex items-center justify-center text-gh-orange">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">Security & Compliance</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-gh-orange border border-amber-800">Microsoft SFI</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-orange"></i> Microsoft Security Future Initiative (SFI)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-orange"></i> S360 Operational & Security Governance</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-orange"></i> Threat Modeling & Secure Cloud Architecture</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-orange"></i> Identity & Access Management (IAM/RBAC)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-gh-orange"></i> Automated Compliance Validation</li>
+                    </ul>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="skill-card glass-card rounded-2xl p-5 border border-gh-border" data-category="automation">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-rose-950/80 border border-rose-800 flex items-center justify-center text-rose-400">
+                                <i class="fa-solid fa-laptop-code"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-base">Software Engineering</h3>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-gh-canvas text-rose-400 border border-rose-800">Code</span>
+                    </div>
+                    <ul class="space-y-2 text-xs text-gh-text font-mono">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-rose-400"></i> C# / .NET / ASP.NET MVC</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-rose-400"></i> Python & AI-Assisted Operations</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-rose-400"></i> JavaScript / JSON / Knockout.js</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-rose-400"></i> T-SQL & Database Optimization</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-angle-right text-rose-400"></i> Git, GitHub & Azure Repos</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Experience Timeline Section -->
+        <section id="experience" class="reveal space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-timeline text-gh-brightGreen text-xl"></i>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">Professional Experience & Operational Impact</h2>
+                    </div>
+                    <p class="text-xs md:text-sm text-gh-muted mt-1">Chronological history of SRE leadership, client achievements, and platform scale.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-mono text-gh-muted">
+                    <i class="fa-solid fa-briefcase text-gh-blue"></i> 12+ Years Total SRE & Software Eng. Experience
+                </div>
+            </div>
+
+            <!-- Experience Timeline Cards Stack -->
+            <div class="relative space-y-6 before:absolute before:inset-0 before:left-4 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gh-border">
+
+                <!-- Timeline Item 1 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gh-canvas border-2 border-gh-brightGreen text-gh-brightGreen font-mono text-xs z-10 my-2 md:my-0 shadow-lg">
+                        01
+                    </div>
+                    <div class="w-full md:w-1/2 md:pr-8 md:text-right order-2 md:order-1">
+                        <div class="glass-card rounded-2xl p-6 border border-gh-border relative">
+                            <div class="flex items-center justify-between md:justify-end gap-2 text-xs font-mono text-gh-brightGreen mb-1">
+                                <span class="bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">2024 – Present</span>
+                                <span class="text-gh-muted">Redmond, WA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">Site Reliability Engineering Lead</h3>
+                            <div class="text-sm font-semibold text-gh-blue mt-0.5">Tech Mahindra</div>
+                            <div class="text-xs text-gh-purple font-mono mb-3"><i class="fa-brands fa-microsoft"></i> Client: Microsoft – Commercial Engineering Services</div>
+
+                            <p class="text-xs text-gh-text leading-relaxed mb-4">
+                                Leading live-site operations and reliability engineering for enterprise platform processing <strong class="text-white">50M+ daily transactions</strong>. Driving SLO attainment, telemetry standards, and automated deployment pipelines.
+                            </p>
+
+                            <ul class="space-y-1.5 text-xs text-gh-muted text-left list-disc list-inside mb-4">
+                                <li>Architected scalable Azure environments using AKS, Terraform, and CI/CD automation.</li>
+                                <li>Implemented Ev2 build/deployment pipelines for multi-region global releases.</li>
+                                <li>Established Microsoft SFI & S360 compliance standards and operational controls.</li>
+                                <li>Automated regression testing via Playwright integration in Azure DevOps.</li>
+                            </ul>
+
+                            <div class="flex flex-wrap gap-1.5 justify-start md:justify-end">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-blue">Azure AKS</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-blue">Ev2 Pipelines</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-blue">Terraform</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-blue">KQL</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-blue">Playwright</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden md:block w-1/2 order-2"></div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gh-canvas border-2 border-gh-blue text-gh-blue font-mono text-xs z-10 my-2 md:my-0 shadow-lg">
+                        02
+                    </div>
+                    <div class="hidden md:block w-1/2 order-1"></div>
+                    <div class="w-full md:w-1/2 md:pl-8 order-2">
+                        <div class="glass-card rounded-2xl p-6 border border-gh-border relative">
+                            <div class="flex items-center justify-between gap-2 text-xs font-mono text-gh-blue mb-1">
+                                <span class="bg-blue-950 px-2.5 py-0.5 rounded-full border border-blue-800">2019 – 2024</span>
+                                <span class="text-gh-muted">Redmond, WA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">Site Reliability Engineer</h3>
+                            <div class="text-sm font-semibold text-gh-blue mt-0.5">Tech Mahindra</div>
+                            <div class="text-xs text-gh-purple font-mono mb-3"><i class="fa-brands fa-microsoft"></i> Client: Microsoft – Devices Engineering Services</div>
+
+                            <p class="text-xs text-gh-text leading-relaxed mb-4">
+                                Built and operated monitoring and automation solutions supporting Microsoft Surface engineering services and partner integration workflows.
+                            </p>
+
+                            <ul class="space-y-1.5 text-xs text-gh-muted list-disc list-inside mb-4">
+                                <li>Reduced manual work-item migration efforts by <strong>~50%</strong> via REST-integrated PowerShell scripts.</li>
+                                <li>Configured automated monitoring using Azure Functions & Application Insights.</li>
+                                <li>Supported Kubernetes pod diagnostics, deployment failures, and incident restoration.</li>
+                                <li>Managed outage communications and drove permanent problem management fixes.</li>
+                            </ul>
+
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-brightGreen">PowerShell</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-brightGreen">Azure DevOps</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-brightGreen">App Insights</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-brightGreen">C#</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-brightGreen">REST APIs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gh-canvas border-2 border-gh-purple text-gh-purple font-mono text-xs z-10 my-2 md:my-0 shadow-lg">
+                        03
+                    </div>
+                    <div class="w-full md:w-1/2 md:pr-8 md:text-right order-2 md:order-1">
+                        <div class="glass-card rounded-2xl p-6 border border-gh-border relative">
+                            <div class="flex items-center justify-between md:justify-end gap-2 text-xs font-mono text-gh-purple mb-1">
+                                <span class="bg-purple-950 px-2.5 py-0.5 rounded-full border border-purple-800">2013 – 2019</span>
+                                <span class="text-gh-muted">Tech Mahindra</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">SRE / Problem Manager</h3>
+                            <div class="text-sm font-semibold text-gh-blue mt-0.5">Tech Mahindra</div>
+                            <div class="text-xs text-gh-purple font-mono mb-3"><i class="fa-brands fa-microsoft"></i> Client: Microsoft – Enterprise Commerce</div>
+
+                            <p class="text-xs text-gh-text leading-relaxed mb-4">
+                                Led problem management and root cause analysis across 60+ enterprise production servers, driving systemic defect reduction and automated SQL maintenance workflows.
+                            </p>
+
+                            <ul class="space-y-1.5 text-xs text-gh-muted text-left list-disc list-inside mb-4">
+                                <li>Analyzed top talkers and recurring alerts to significantly lower incident volume.</li>
+                                <li>Automated database backups, index maintenance, deadlocks, and alert notifications.</li>
+                                <li>Served as primary 24/7 on-call lead for critical production incidents.</li>
+                            </ul>
+
+                            <div class="flex flex-wrap gap-1.5 justify-start md:justify-end">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-purple">SQL Server</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-purple">T-SQL</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-purple">Incident Mgmt</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gh-canvas border border-gh-border text-gh-purple">Windows Server</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden md:block w-1/2 order-2"></div>
+                </div>
+
+                <!-- Timeline Item 4 & 5 Combined Compact -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gh-canvas border-2 border-gh-orange text-gh-orange font-mono text-xs z-10 my-2 md:my-0 shadow-lg">
+                        04
+                    </div>
+                    <div class="hidden md:block w-1/2 order-1"></div>
+                    <div class="w-full md:w-1/2 md:pl-8 order-2">
+                        <div class="glass-card rounded-2xl p-6 border border-gh-border relative space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between text-xs font-mono text-gh-orange">
+                                    <span>2011 – 2013</span>
+                                    <span class="text-gh-muted">Quant Systems</span>
+                                </div>
+                                <h4 class="font-bold text-white text-base">Software Engineer (Hawkes Learning Systems)</h4>
+                                <p class="text-xs text-gh-muted mt-1">Developed interactive educational platforms using C#, ASP.NET MVC, JavaScript, and SQL Server in Agile teams.</p>
+                            </div>
+                            <div class="border-t border-gh-border pt-3">
+                                <div class="flex items-center justify-between text-xs font-mono text-gh-orange">
+                                    <span>2010 – 2011</span>
+                                    <span class="text-gh-muted">Inex Soft India</span>
+                                </div>
+                                <h4 class="font-bold text-white text-base">Software Engineer (DRDO - NMRL Client)</h4>
+                                <p class="text-xs text-gh-muted mt-1">Built experimental data analysis expert system using VB 6.0 and Oracle 10g for DRDO Naval Research Laboratory.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Honors, Education & Recognitions Grid -->
+        <section id="awards" class="reveal grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Awards Box -->
+            <div class="glass-card rounded-2xl p-6 border border-gh-border">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-amber-950/80 border border-amber-800 flex items-center justify-center text-gh-orange text-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Awards & Recognition</h3>
+                        <p class="text-xs text-gh-muted">Honors for exceptional delivery & live-site support</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border flex items-start gap-3">
+                        <i class="fa-solid fa-award text-gh-orange text-base mt-0.5"></i>
+                        <div>
+                            <div class="text-sm font-bold text-white">7x ACE Awards</div>
+                            <p class="text-xs text-gh-muted">Awarded for sustained performance, operational reliability, and tech leadership initiatives.</p>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border flex items-start gap-3">
+                        <i class="fa-solid fa-bolt text-gh-brightGreen text-base mt-0.5"></i>
+                        <div>
+                            <div class="text-sm font-bold text-white">2x Grand Salute – Livewire Awards</div>
+                            <p class="text-xs text-gh-muted">Received from Tech Mahindra for resolving high-severity critical incidents and delivering high-impact projects.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Box -->
+            <div class="glass-card rounded-2xl p-6 border border-gh-border">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800 flex items-center justify-center text-gh-blue text-lg">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Education & Credentials</h3>
+                        <p class="text-xs text-gh-muted">Academic background in Computer Applications</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                        <div class="text-xs font-mono text-gh-blue mb-0.5">Master Degree</div>
+                        <div class="text-sm font-bold text-white">Master of Computer Applications (MCA)</div>
+                        <div class="text-xs text-gh-muted">Andhra University, India</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-gh-canvas border border-gh-border">
+                        <div class="text-xs font-mono text-gh-blue mb-0.5">Bachelor Degree</div>
+                        <div class="text-sm font-bold text-white">Bachelor of Science (Computer Science)</div>
+                        <div class="text-xs text-gh-muted">Andhra University, India</div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-gh-border py-8 px-4 text-center text-xs text-gh-muted font-mono relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa-brands fa-github text-base text-white"></i>
+                <span>Designed for Ramachandra Rao Rachakonda • Senior SRE</span>
+            </div>
+            <div>
+                <span>Telemetry Node: Redmond, WA • Status: <span class="text-gh-brightGreen">Nominal</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Background Particle & Node Topology Network Canvas
+        const canvas = document.getElementById('telemetryCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#58a6ff' : '#3fb950';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = 0.5;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connections between nodes
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = '#30363d';
+                        ctx.globalAlpha = 0.25 * (1 - dist / 130);
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // Generate Heatmap Activity Grid
+        const heatmapGrid = document.getElementById('heatmapGrid');
+        if (heatmapGrid) {
+            const levels = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'];
+            for (let i = 0; i < 52 * 7; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'contrib-cell';
+                const rand = Math.random();
+                let colorIndex = 0;
+                if (rand > 0.85) colorIndex = 4;
+                else if (rand > 0.65) colorIndex = 3;
+                else if (rand > 0.45) colorIndex = 2;
+                else if (rand > 0.25) colorIndex = 1;
+
+                cell.style.backgroundColor = levels[colorIndex];
+                cell.title = `Activity Event: ${Math.floor(Math.random() * 15 + 1)} SRE actions`;
+                heatmapGrid.appendChild(cell);
+            }
+        }
+
+        // Interactive Terminal Handler
+        const terminalOutput = document.getElementById('terminalOutput');
+        const terminalInput = document.getElementById('terminalInput');
+
+        const commands = {
+            'help': 'Available commands:\n  • sre-healthcheck  - View real-time cluster health\n  • kubectl get pods  - List running Kubernetes pods\n  • az monitor query  - Sample KQL telemetry query\n  • cat experience.json - Render core career summary\n  • contact           - Print contact details\n  • clear             - Clear terminal logs',
+            
+            'sre-healthcheck': '[HEALTHCHECK RESULT]\n✔ Azure AKS EastUS: ONLINE (100% Ready)\n✔ SLO Attainment: 99.991% (Error Budget Healthy)\n✔ Telemetry Ingestion: 50M+ daily events active\n✔ S360 / SFI Compliance: 100% Passed',
+            
+            'kubectl get pods': 'NAME                                   READY   STATUS    RESTARTS   AGE\ncommercial-engg-api-7f9d8b859b-x29q1   1/1     Running   0          14d\ntelemetry-ingest-daemon-55c68f44d-kpl  1/1     Running   0          42d\nazure-servicebus-worker-88df9f9-m9z2   1/1     Running   0          9d\nsfi-compliance-scanner-33a100-q87x     1/1     Running   0          18d',
+            
+            'az monitor query': 'KQL Query: AppRequests | summarize req_count=count() by bin(timestamp, 1h), resultCode\n[RESULT] 200 OK: 49,821,102 reqs | 500 Error: 12 reqs (0.0002% rate) - SLA Optimal.',
+            
+            'cat experience.json': '{\n  "name": "Ramachandra Rao Rachakonda",\n  "role": "Senior Site Reliability Engineer Lead",\n  "location": "Redmond, WA",\n  "experience_years": 12,\n  "microsoft_env_years": 13,\n  "awards": ["7x ACE Awards", "2x Grand Salute Livewire"]\n}',
+
+            'contact': 'Email: ramachandra.rachakonda@gmail.com\nPhone: (425) 628-7173\nLocation: Redmond, WA (H1B/B1 Visa)'
+        };
+
+        function executeTerminalCommand(cmd) {
+            if (!terminalOutput) return;
+
+            const commandLine = document.createElement('div');
+            commandLine.innerHTML = `<span class="text-gh-brightGreen">ramachandra@sre-hub</span>:<span class="text-gh-blue">~</span>$ <span class="text-white">${escapeHtml(cmd)}</span>`;
+            terminalOutput.appendChild(commandLine);
+
+            if (cmd === 'clear') {
+                terminalOutput.innerHTML = '';
+                return;
+            }
+
+            const response = document.createElement('div');
+            response.className = 'text-gh-muted mt-1 whitespace-pre-wrap leading-relaxed';
+            response.innerText = commands[cmd] || `Command not recognized: '${cmd}'. Type 'help' for options.`;
+            terminalOutput.appendChild(response);
+
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function handleTerminalSubmit(e) {
+            e.preventDefault();
+            const val = terminalInput.value.trim();
+            if (val) {
+                executeTerminalCommand(val);
+                terminalInput.value = '';
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Incident Simulator Controls
+        function triggerSimulatedIncident() {
+            const log = document.getElementById('simulatorLog');
+            const latencyValue = document.getElementById('latencyValue');
+            const latencyBar = document.getElementById('latencyBar');
+            const errorBudget = document.getElementById('errorBudget');
+            const errorBar = document.getElementById('errorBar');
+
+            latencyValue.innerText = '480ms (HIGH)';
+            latencyValue.className = 'font-mono text-gh-red';
+            latencyBar.style.width = '90%';
+            latencyBar.className = 'bg-gh-red h-full transition-all duration-500';
+
+            errorBudget.innerText = '94.20% (DEGRADED)';
+            errorBudget.className = 'font-mono text-gh-orange';
+            errorBar.style.width = '50%';
+            errorBar.className = 'bg-gh-orange h-full transition-all duration-500';
+
+            const p = document.createElement('p');
+            p.className = 'text-gh-red font-bold animate-pulse';
+            p.innerText = `[${new Date().toLocaleTimeString()}] ALERT: High latency detected on AKS EastUS cluster. Error budget draining!`;
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function runAutoMitigation() {
+            const log = document.getElementById('simulatorLog');
+            const latencyValue = document.getElementById('latencyValue');
+            const latencyBar = document.getElementById('latencyBar');
+            const errorBudget = document.getElementById('errorBudget');
+            const errorBar = document.getElementById('errorBar');
+
+            latencyValue.innerText = '28ms';
+            latencyValue.className = 'font-mono text-gh-brightGreen';
+            latencyBar.style.width = '28%';
+            latencyBar.className = 'bg-gh-brightGreen h-full transition-all duration-500';
+
+            errorBudget.innerText = '99.98%';
+            errorBudget.className = 'font-mono text-gh-blue';
+            errorBar.style.width = '98%';
+            errorBar.className = 'bg-gh-blue h-full transition-all duration-500';
+
+            const p1 = document.createElement('p');
+            p1.className = 'text-gh-blue';
+            p1.innerText = `[${new Date().toLocaleTimeString()}] AI Ops Automation: Triggered scale-out on node pool. Redirecting traffic.`;
+            log.appendChild(p1);
+
+            const p2 = document.createElement('p');
+            p2.className = 'text-gh-brightGreen';
+            p2.innerText = `[${new Date().toLocaleTimeString()}] MITIGATED: Latency stabilized to 28ms. Service restored.`;
+            log.appendChild(p2);
+
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function resetSimulator() {
+            const log = document.getElementById('simulatorLog');
+            log.innerHTML = `<p class="text-gh-muted">[00:00:01] System telemetry nominal. Monitoring AKS pods & Azure Event Grid.</p><p class="text-gh-brightGreen">[00:00:05] Azure Monitor KQL stream healthy. SLO metrics at 99.99%.</p>`;
+            runAutoMitigation();
+        }
+
+        // Filterable Skills Taxonomy
+        function filterSkills(category) {
+            const buttons = document.querySelectorAll('.skill-filter-btn');
+            buttons.forEach(btn => {
+                btn.className = 'skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-canvas text-gh-muted border border-gh-border hover:text-white transition-all';
+            });
+            event.target.className = 'skill-filter-btn active px-3 py-1.5 rounded-lg text-xs font-mono bg-gh-blue text-black font-semibold transition-all';
+
+            const cards = document.querySelectorAll('.skill-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Copy Contact Information
+        function copyContactInfo() {
+            const textToCopy = "Ramachandra Rao Rachakonda | Senior SRE | Email: ramachandra.rachakonda@gmail.com | Phone: (425) 628-7173";
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const copyText = document.getElementById('copyText');
+            const copyIcon = document.getElementById('copyIcon');
+            copyText.innerText = "Copied!";
+            copyIcon.className = "fa-solid fa-check text-gh-brightGreen";
+
+            setTimeout(() => {
+                copyText.innerText = "Copy Info";
+                copyIcon.className = "fa-solid fa-copy";
+            }, 2500);
+        }
+
+        // Scroll reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
