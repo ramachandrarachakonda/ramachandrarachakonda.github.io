@@ -1,900 +1,901 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramachandra Rao Rachakonda | Forward Deployed Engineer & Senior SRE Lead</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ramachandra Rao Rachakonda | Senior Forward Deployed Engineer & SRE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --bg-card: #161b22;
+      --border-color: #30363d;
+      --border-hover: #8b949e;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --text-white: #f0f6fc;
+      --gh-green: #238636;
+      --gh-green-bright: #3fb950;
+      --azure-blue: #58a6ff;
+      --cyan-bright: #39c5bb;
+      --purple-accent: #a371f7;
+      --gold-accent: #d29922;
+      --danger-red: #f85149;
+      --font-code: 'Fira Code', monospace;
+      --font-sans: 'Inter', sans-serif;
+    }
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        github: {
-                            dark: '#0d1117',
-                            card: '#161b22',
-                            border: '#30363d',
-                            text: '#c9d1d9',
-                            muted: '#8b949e',
-                            green: '#238636',
-                            greenHover: '#2ea043',
-                            blue: '#58a6ff',
-                            purple: '#bc8cff',
-                            yellow: '#d29922',
-                            red: '#f85149'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-    <style>
-        /* Custom Customizations & Scrollbars */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0d1117;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #30363d;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #484f58;
-        }
-        canvas#bgCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.25;
-        }
-        .glow-effect {
-            box-shadow: 0 0 20px rgba(88, 166, 255, 0.15);
-        }
-        .glow-effect:hover {
-            box-shadow: 0 0 25px rgba(88, 166, 255, 0.3);
-        }
-        .terminal-cursor::after {
-            content: '█';
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        /* Custom Pulse for Incidents */
-        .pulse-red {
-            animation: pulse-red-anim 2s infinite;
-        }
-        @keyframes pulse-red-anim {
-            0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
-        }
-    </style>
+    #particleCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #cursorCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: rgba(22, 27, 34, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--azure-blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 10px; height: 10px;
+      background: var(--gh-green-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gh-green-bright);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.5; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-code);
+      font-size: 0.88rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--azure-blue);
+      text-shadow: 0 0 8px rgba(88, 166, 255, 0.4);
+    }
+
+    /* HERO SECTION & NAME ANIMATIONS */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* NAME CYBER HUD FRAME */
+    .name-hud-wrapper {
+      position: relative;
+      display: inline-block;
+      padding: 24px 36px;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+
+    .radar-ring {
+      position: absolute;
+      top: -15px; left: -15px; right: -15px; bottom: -15px;
+      border: 1px dashed rgba(88, 166, 255, 0.3);
+      border-radius: 16px;
+      animation: rotateRing 20s linear infinite;
+      pointer-events: none;
+    }
+
+    .radar-ring::before {
+      content: '';
+      position: absolute;
+      top: -4px; left: 50%;
+      width: 8px; height: 8px;
+      background: var(--cyan-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--cyan-bright);
+    }
+
+    @keyframes rotateRing {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hud-corner {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-color: var(--azure-blue);
+      border-style: solid;
+      pointer-events: none;
+    }
+
+    .hud-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+    .hud-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+    .hud-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+    .hud-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+    .name-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      font-family: var(--font-code);
+      background: linear-gradient(135deg, #ffffff 0%, #58a6ff 30%, #39c5bb 60%, #a371f7 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientFlow 6s ease infinite;
+      letter-spacing: -1px;
+      text-shadow: 0 0 30px rgba(88, 166, 255, 0.2);
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: var(--azure-blue);
+      font-family: var(--font-code);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .badge-fde {
+      background: rgba(35, 134, 54, 0.2);
+      border: 1px solid var(--gh-green-bright);
+      color: var(--gh-green-bright);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .hero-tagline {
+      max-width: 800px;
+      color: var(--text-main);
+      font-size: 1.05rem;
+      margin-bottom: 30px;
+    }
+
+    /* METRICS BAR */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      width: 100%;
+      margin: 30px 0 50px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--azure-blue);
+      box-shadow: 0 8px 25px rgba(88, 166, 255, 0.15);
+    }
+
+    .metric-val {
+      font-family: var(--font-code);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gh-green-bright);
+    }
+
+    .metric-lbl {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* SECTION TITLE STYLING */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-code);
+      font-size: 1.5rem;
+      color: var(--text-white);
+      margin: 50px 0 24px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-head span {
+      color: var(--azure-blue);
+    }
+
+    /* SKILLS BARS */
+    .skills-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+    }
+
+    .skill-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #21262d;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--azure-blue), var(--cyan-bright));
+      border-radius: 4px;
+      position: relative;
+      transition: width 1.5s ease-in-out;
+    }
+
+    .skill-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; width: 8px;
+      background: #ffffff;
+      box-shadow: 0 0 10px #ffffff;
+      border-radius: 50%;
+    }
+
+    /* EXPERIENCE TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid var(--border-color);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 30px;
+      padding-left: 20px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -27px; top: 0;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--azure-blue);
+      border: 3px solid var(--bg-dark);
+      box-shadow: 0 0 8px var(--azure-blue);
+    }
+
+    .timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-card:hover {
+      border-color: var(--border-hover);
+      transform: translateX(6px);
+    }
+
+    .role-title {
+      font-size: 1.2rem;
+      color: var(--text-white);
+      font-weight: 700;
+    }
+
+    .company-meta {
+      color: var(--azure-blue);
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .bullet-list {
+      list-style: none;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .bullet-list li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--gh-green-bright);
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      background: rgba(56, 139, 253, 0.1);
+      color: var(--azure-blue);
+      border: 1px solid rgba(56, 139, 253, 0.3);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+    }
+
+    /* CLI TERMINAL */
+    .terminal-card {
+      background: #011627;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      font-family: var(--font-code);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .terminal-header {
+      background: #0b253a;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .term-btn { width: 12px; height: 12px; border-radius: 50%; }
+    .term-btn.red { background: #ff5f56; }
+    .term-btn.yellow { background: #ffbd2e; }
+    .term-btn.green { background: #27c93f; }
+
+    .terminal-body {
+      padding: 20px;
+      min-height: 220px;
+      color: #addb67;
+      font-size: 0.9rem;
+    }
+
+    .term-input-line {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .term-input {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      width: 100%;
+      outline: none;
+    }
+
+    /* SIMULATOR WIDGET */
+    .sim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 30px;
+    }
+
+    .sim-btn {
+      background: var(--gh-green);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: var(--font-code);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .sim-btn:hover {
+      background: var(--gh-green-bright);
+      box-shadow: 0 0 12px var(--gh-green-bright);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0 20px;
+      color: var(--text-muted);
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 60px;
+    }
+  </style>
 </head>
-<body class="bg-github-dark text-github-text font-sans antialiased min-h-screen relative overflow-x-hidden">
+<body>
 
-    <canvas id="bgCanvas"></canvas>
+  <canvas id="particleCanvas"></canvas>
+  <canvas id="cursorCanvas"></canvas>
 
-    <!-- CONTENT WRAPPER -->
-    <div class="relative z-10 flex flex-col min-h-screen">
+  <div class="app-wrapper">
+    <nav>
+      <div class="nav-brand">
+        <div class="status-dot"></div>
+        <span>RRR_SRE_FDE_OS v2.6</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#about">// About</a></li>
+        <li><a href="#skills">// Skills</a></li>
+        <li><a href="#experience">// Experience</a></li>
+        <li><a href="#terminal">// CLI</a></li>
+        <li><a href="#simulator">// Simulator</a></li>
+      </ul>
+    </nav>
 
-        <header class="sticky top-0 z-50 bg-github-dark/90 backdrop-blur-md border-b border-github-border px-4 lg:px-8 py-3">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fab fa-github text-3xl text-white"></i>
-                    <div>
-                        <span class="font-bold text-white tracking-wide text-lg">Ramachandra Rao Rachakonda</span>
-                        <span class="hidden md:inline-block ml-2 text-xs bg-github-border text-github-blue px-2.5 py-0.5 rounded-full font-mono font-semibold border border-github-blue/30">
-                            FDE & SRE Lead
-                        </span>
-                    </div>
-                </div>
+    <!-- HERO SECTION -->
+    <section class="hero" id="about">
+      <div class="name-hud-wrapper" id="nameContainer" title="Click for telemetry particle burst">
+        <div class="radar-ring"></div>
+        <div class="hud-corner hud-tl"></div>
+        <div class="hud-corner hud-tr"></div>
+        <div class="hud-corner hud-bl"></div>
+        <div class="hud-corner hud-br"></div>
+        <h1 class="name-title" id="nameText">Ramachandra Rao Rachakonda</h1>
+      </div>
 
-                <nav class="hidden lg:flex items-center space-x-6 text-sm font-medium">
-                    <a href="#about" class="text-github-muted hover:text-github-blue transition-colors">About</a>
-                    <a href="#skills" class="text-github-muted hover:text-github-blue transition-colors">Core Competencies</a>
-                    <a href="#experience" class="text-github-muted hover:text-github-blue transition-colors">FDE Timeline</a>
-                    <a href="#simulator" class="text-github-muted hover:text-github-blue transition-colors">Live Ops Console</a>
-                    <a href="#cli" class="text-github-muted hover:text-github-blue transition-colors">Terminal CLI</a>
-                    <a href="#awards" class="text-github-muted hover:text-github-blue transition-colors">Awards</a>
-                </nav>
+      <div class="hero-subtitle">
+        <span>Senior Forward Deployed Engineer (FDE)</span>
+        <span class="badge-fde">Microsoft Ecosystem Specialist</span>
+        <span>Senior SRE Lead</span>
+      </div>
 
-                <div class="flex items-center space-x-3">
-                    <a href="mailto:ramachandra.rachakonda@gmail.com" class="px-3.5 py-1.5 text-xs md:text-sm font-medium bg-github-green hover:bg-github-greenHover text-white rounded-md transition-colors shadow-sm flex items-center space-x-1.5">
-                        <i class="fas fa-paper-plane"></i>
-                        <span>Contact Me</span>
-                    </a>
-                </div>
-            </div>
-        </header>
+      <p class="hero-tagline">
+        Forward Deployed SRE Lead with 12+ years of experience delivering high-availability cloud solutions, 
+        automating live-site operations, and building resilient telemetry platforms for enterprise client environments processing over 50M+ daily transactions.
+      </p>
 
-        <!-- MAIN CONTAINER -->
-        <main class="flex-grow max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-12">
-
-            <section id="about" class="bg-github-card border border-github-border rounded-xl p-6 md:p-8 glow-effect">
-                <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-                    
-                    <!-- Interactive Profile Photo Area -->
-                    <div class="relative group">
-                        <div class="w-36 h-36 md:w-44 md:h-44 rounded-full border-2 border-github-blue p-1 bg-github-dark flex-shrink-0 relative overflow-hidden shadow-xl">
-                            <img id="profileImage" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=500" alt="Ramachandra Rao Rachakonda" class="w-full h-full object-cover rounded-full">
-                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center rounded-full cursor-pointer" onclick="openPhotoModal()">
-                                <i class="fas fa-camera text-white text-2xl mb-1"></i>
-                                <span class="text-[10px] text-white font-mono uppercase tracking-wider">Update Photo</span>
-                            </div>
-                        </div>
-                        <span class="absolute bottom-2 right-2 w-5 h-5 bg-github-green border-2 border-github-dark rounded-full" title="Online / Active Live-Site Command"></span>
-                    </div>
-
-                    <!-- Profile Info Header -->
-                    <div class="flex-1 text-center lg:text-left space-y-4">
-                        <div>
-                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
-                                <h1 class="text-2xl md:text-4xl font-extrabold text-white tracking-tight">Ramachandra Rao Rachakonda</h1>
-                                <span class="text-xs font-mono bg-github-blue/10 text-github-blue border border-github-blue/30 px-2 py-0.5 rounded">Redmond, WA</span>
-                            </div>
-                            <p class="text-base md:text-lg font-mono text-github-blue font-medium">
-                                Forward Deployed Engineer (FDE) | Senior Cloud Reliability & Solutions Lead | AI Ops | Observability
-                            </p>
-                        </div>
-
-                        <!-- Professional Summary -->
-                        <p class="text-sm md:text-base text-github-text leading-relaxed">
-                            Senior Forward Deployed Engineer (FDE) and Cloud Reliability Lead with over 12 years of experience building, deploying, and optimizing enterprise cloud platforms, with <strong class="text-white">13+ years embedded across Microsoft client ecosystems</strong>. Proven track record bridging client requirements and backend core engineering, driving technical adoption, automated integrations, live-site operations, and root cause mitigation. Hands-on expertise across Azure, Kubernetes (AKS), C#, PowerShell, CI/CD pipelines, AI Ops, and telemetry to deliver resilient, scalable client solutions.
-                        </p>
-
-                        <!-- Quick Contact / Badges -->
-                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2 text-xs font-mono">
-                            <span class="flex items-center gap-1.5 bg-github-dark border border-github-border px-3 py-1.5 rounded-md text-github-muted">
-                                <i class="fas fa-envelope text-github-blue"></i> ramachandra.rachakonda@gmail.com
-                            </span>
-                            <span class="flex items-center gap-1.5 bg-github-dark border border-github-border px-3 py-1.5 rounded-md text-github-muted">
-                                <i class="fas fa-phone text-github-green"></i> (425) 628-7173
-                            </span>
-                            <span class="flex items-center gap-1.5 bg-github-dark border border-github-border px-3 py-1.5 rounded-md text-github-muted">
-                                <i class="fas fa-map-marker-alt text-github-red"></i> Redmond, WA
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-6 border-t border-github-border">
-                    <div class="bg-github-dark p-4 rounded-lg border border-github-border/60 text-center">
-                        <div class="text-2xl md:text-3xl font-bold font-mono text-github-blue" id="counter1">50M+</div>
-                        <div class="text-xs text-github-muted uppercase tracking-wider font-mono mt-1">Daily Transactions Managed</div>
-                    </div>
-                    <div class="bg-github-dark p-4 rounded-lg border border-github-border/60 text-center">
-                        <div class="text-2xl md:text-3xl font-bold font-mono text-github-green" id="counter2">13+ Years</div>
-                        <div class="text-xs text-github-muted uppercase tracking-wider font-mono mt-1">Embedded MSFT Experience</div>
-                    </div>
-                    <div class="bg-github-dark p-4 rounded-lg border border-github-border/60 text-center">
-                        <div class="text-2xl md:text-3xl font-bold font-mono text-github-purple" id="counter3">50%</div>
-                        <div class="text-xs text-github-muted uppercase tracking-wider font-mono mt-1">Manual Toil Reduction</div>
-                    </div>
-                    <div class="bg-github-dark p-4 rounded-lg border border-github-border/60 text-center">
-                        <div class="text-2xl md:text-3xl font-bold font-mono text-github-yellow" id="counter4">9x</div>
-                        <div class="text-xs text-github-muted uppercase tracking-wider font-mono mt-1">ACE & Livewire Awards</div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-github-card border border-github-border rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-sm font-mono text-github-muted uppercase tracking-wider flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-github-blue"></i> Production Deployments & Operational Heatmap
-                    </h2>
-                    <span class="text-xs font-mono text-github-muted">2,418 deployment & incident actions in the last year</span>
-                </div>
-                
-                <!-- Scrollable heatmap -->
-                <div class="overflow-x-auto pb-2">
-                    <div class="inline-grid grid-rows-7 grid-flow-col gap-1 text-[10px]" id="heatmapGrid">
-                        <!-- Heatmap cells injected dynamically via JavaScript -->
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs text-github-muted font-mono mt-3">
-                    <span>Learn how we maintain 99.99% availability</span>
-                    <div class="flex items-center gap-1.5">
-                        <span>Less</span>
-                        <span class="w-3 h-3 bg-[#161b22] border border-github-border rounded-sm"></span>
-                        <span class="w-3 h-3 bg-[#0e4429] rounded-sm"></span>
-                        <span class="w-3 h-3 bg-[#006d32] rounded-sm"></span>
-                        <span class="w-3 h-3 bg-[#26a641] rounded-sm"></span>
-                        <span class="w-3 h-3 bg-[#39d353] rounded-sm"></span>
-                        <span>More</span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="simulator" class="bg-github-card border border-github-border rounded-xl p-6 glow-effect">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-github-border pb-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fas fa-[#f85149] fa-shield-halved text-github-red"></i> FDE Incident Command & Live-Site Simulator
-                        </h2>
-                        <p class="text-xs text-github-muted font-mono mt-1">Simulate real-time partner incident detection, telemetry diagnosis, and automated mitigation.</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span id="simulatorStatusBadge" class="text-xs font-mono px-3 py-1 rounded-full bg-github-green/20 text-github-green border border-github-green/30 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-github-green animate-ping"></span> Live-Site Status: NOMINAL
-                        </span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Left Control Panel -->
-                    <div class="bg-github-dark border border-github-border rounded-lg p-4 space-y-4">
-                        <h3 class="text-xs font-mono text-github-muted uppercase tracking-wider">Trigger Scenario</h3>
-                        <div class="space-y-2">
-                            <button onclick="triggerIncident('aks_latency')" class="w-full text-left p-3 rounded border border-github-border bg-github-card hover:border-github-blue transition-colors font-mono text-xs text-white flex items-center justify-between group">
-                                <div>
-                                    <div class="font-semibold text-github-blue group-hover:underline">AKS Pod Latency Spikes</div>
-                                    <div class="text-[11px] text-github-muted">High TCP queuing in Commercial Gateway</div>
-                                </div>
-                                <i class="fas fa-play text-github-muted group-hover:text-github-blue"></i>
-                            </button>
-
-                            <button onclick="triggerIncident('partner_auth')" class="w-full text-left p-3 rounded border border-github-border bg-github-card hover:border-github-yellow transition-colors font-mono text-xs text-white flex items-center justify-between group">
-                                <div>
-                                    <div class="font-semibold text-github-yellow group-hover:underline">Partner API Auth Timeout</div>
-                                    <div class="text-[11px] text-github-muted">OAuth token threshold breach</div>
-                                </div>
-                                <i class="fas fa-play text-github-muted group-hover:text-github-yellow"></i>
-                            </button>
-
-                            <button onclick="triggerIncident('sql_deadlock')" class="w-full text-left p-3 rounded border border-github-border bg-github-card hover:border-github-red transition-colors font-mono text-xs text-white flex items-center justify-between group">
-                                <div>
-                                    <div class="font-semibold text-github-red group-hover:underline">Enterprise SQL DB Lock</div>
-                                    <div class="text-[11px] text-github-muted">Commerce checkout transaction stall</div>
-                                </div>
-                                <i class="fas fa-play text-github-muted group-hover:text-github-red"></i>
-                            </button>
-                        </div>
-
-                        <div class="pt-2 border-t border-github-border">
-                            <button id="mitigateBtn" onclick="applyMitigation()" disabled class="w-full py-2.5 px-4 bg-github-border text-github-muted font-mono text-xs rounded font-bold cursor-not-allowed transition-all flex items-center justify-center gap-2">
-                                <i class="fas fa-wrench"></i> Execute Automated Mitigation Playbook
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Right Live Telemetry & Log Monitor -->
-                    <div class="lg:col-span-2 bg-github-dark border border-github-border rounded-lg p-4 font-mono text-xs flex flex-col justify-between h-80">
-                        <div class="flex items-center justify-between border-b border-github-border pb-2 text-github-muted">
-                            <span class="flex items-center gap-2"><i class="fas fa-terminal text-github-blue"></i> Telemetry & KQL Stream</span>
-                            <span id="simTime" class="text-[10px]">UTC: 2026-09-18 17:20:00</span>
-                        </div>
-                        <div id="simulatorLogs" class="overflow-y-auto space-y-1.5 my-2 flex-grow pr-2 text-github-text">
-                            <div class="text-github-muted">[SYSTEM] Initializing telemetry stream... All services responding nominal.</div>
-                            <div class="text-github-muted">[KQL] Azure Monitor queries executing normally across 60+ enterprise clusters.</div>
-                        </div>
-                        <div class="border-t border-github-border pt-2 flex items-center justify-between text-[11px]">
-                            <span class="text-github-muted">SLO Availability: <strong id="sloMetric" class="text-github-green">99.99%</strong></span>
-                            <span class="text-github-muted">Client Response Time: <strong id="latencyMetric" class="text-github-green">24ms</strong></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="skills" class="bg-github-card border border-github-border rounded-xl p-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fas fa-cubes text-github-blue"></i> Core Competencies & Skills Matrix
-                        </h2>
-                        <p class="text-xs text-github-muted font-mono mt-1">Filter engineering skill sets by operational category.</p>
-                    </div>
-                    <!-- Filter Buttons -->
-                    <div class="flex flex-wrap gap-1.5" id="skillFilters">
-                        <button onclick="filterSkills('all')" class="skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-blue text-github-dark font-bold border border-github-blue">All</button>
-                        <button onclick="filterSkills('fde')" class="skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-dark text-github-muted border border-github-border hover:border-github-blue">FDE & Client Architecture</button>
-                        <button onclick="filterSkills('sre')" class="skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-dark text-github-muted border border-github-border hover:border-github-blue">SRE & Incident Ops</button>
-                        <button onclick="filterSkills('cloud')" class="skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-dark text-github-muted border border-github-border hover:border-github-blue">Cloud & DevOps</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="skillsGrid">
-                    <!-- FDE Cards -->
-                    <div class="skill-card fde bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-handshake text-github-blue text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">Client Architecture & Delivery</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">Embedded client engagement, enterprise partner architecture alignment, technical solution design.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-blue px-2 py-0.5 rounded">Partner Onboarding</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-blue px-2 py-0.5 rounded">Pre-Sales Delivery</span>
-                        </div>
-                    </div>
-
-                    <div class="skill-card fde bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-robot text-github-purple text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">Custom Automation & Tooling</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">PowerShell REST wrappers, C# automation modules, and custom data sync engines.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">REST APIs</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">PowerShell</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">C#</span>
-                        </div>
-                    </div>
-
-                    <!-- SRE Cards -->
-                    <div class="skill-card sre bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-chart-line text-github-green text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">Observability & MELT Stack</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">Enterprise telemetry, proactive alert tuning, KQL log analytics, and executive dashboards.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-green px-2 py-0.5 rounded">Azure Monitor</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-green px-2 py-0.5 rounded">KQL</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-green px-2 py-0.5 rounded">App Insights</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-green px-2 py-0.5 rounded">Power BI</span>
-                        </div>
-                    </div>
-
-                    <div class="skill-card sre bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-triangle-exclamation text-github-yellow text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">Incident & Problem Management</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">High-severity incident command, root cause analysis (RCA), CAPA implementation, SLO management.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-yellow px-2 py-0.5 rounded">RCA</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-yellow px-2 py-0.5 rounded">SLO/SLI</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-yellow px-2 py-0.5 rounded">CAPA</span>
-                        </div>
-                    </div>
-
-                    <!-- Cloud Cards -->
-                    <div class="skill-card cloud bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-cloud text-github-blue text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">Microsoft Azure & Containers</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">Azure Kubernetes Service (AKS), Azure Functions, Cosmos DB, Azure SQL, and Cloud Governance.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-blue px-2 py-0.5 rounded">AKS</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-blue px-2 py-0.5 rounded">Kubernetes</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-blue px-2 py-0.5 rounded">Azure SQL</span>
-                        </div>
-                    </div>
-
-                    <div class="skill-card cloud bg-github-dark p-4 rounded-lg border border-github-border hover:border-github-blue transition-colors">
-                        <div class="flex items-center gap-3 mb-2">
-                            <i class="fas fa-code-branch text-github-purple text-lg"></i>
-                            <h3 class="font-bold text-white text-sm">DevOps & Release Engineering</h3>
-                        </div>
-                        <p class="text-xs text-github-muted mb-3">Azure DevOps Pipelines (YAML), Ev2 releases, Playwright regression automation, Microsoft SFI & S360.</p>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">Azure DevOps</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">Ev2</span>
-                            <span class="text-[10px] font-mono bg-github-card border border-github-border text-github-purple px-2 py-0.5 rounded">Playwright</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="experience" class="bg-github-card border border-github-border rounded-xl p-6">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fas fa-briefcase text-github-blue"></i> Forward Deployed Engineering Experience
-                        </h2>
-                        <p class="text-xs text-github-muted font-mono mt-1">13+ years of embedded delivery and client solutions across Microsoft platforms.</p>
-                    </div>
-                </div>
-
-                <!-- Timeline Container -->
-                <div class="relative border-l-2 border-github-border ml-4 md:ml-6 space-y-10 pl-6 md:pl-8">
-
-                    <!-- Role 1 -->
-                    <div class="relative group">
-                        <span class="absolute -left-[31px] md:-left-[39px] top-1 w-5 h-5 rounded-full bg-github-blue border-4 border-github-card"></span>
-                        <div class="bg-github-dark border border-github-border rounded-lg p-5 hover:border-github-blue transition-all">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Forward Deployed Engineer / SRE Lead</h3>
-                                    <div class="text-sm font-mono text-github-blue">Tech Mahindra <span class="text-github-muted">(Client: Microsoft – Commercial Engineering Services)</span></div>
-                                </div>
-                                <span class="text-xs font-mono bg-github-card border border-github-border px-3 py-1 rounded-full text-github-muted w-fit">2024 – Present | Redmond, WA</span>
-                            </div>
-                            <ul class="space-y-2 text-xs md:text-sm text-github-text list-disc list-inside">
-                                <li><strong>Client Architecture & Delivery:</strong> Embedded directly with enterprise commercial partners to architect scalable Azure/AKS platforms, aligning technical integration needs with security and cost optimization goals.</li>
-                                <li><strong>Embedded Live-Site Reliability:</strong> Lead production incident management, SLO attainment, and proactive observability for commercial platforms processing 50M+ daily transactions.</li>
-                                <li><strong>Deployment Automation:</strong> Maintain production Azure DevOps YAML and Ev2 release pipelines to drive seamless, zero-downtime global application rollouts.</li>
-                                <li><strong>Partner Alignment & Quality:</strong> Design automated Playwright regression suites within CI/CD pipelines and drive technical reviews with executive and client engineering stakeholders.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Role 2 -->
-                    <div class="relative group">
-                        <span class="absolute -left-[31px] md:-left-[39px] top-1 w-5 h-5 rounded-full bg-github-purple border-4 border-github-card"></span>
-                        <div class="bg-github-dark border border-github-border rounded-lg p-5 hover:border-github-purple transition-all">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Forward Deployed Solutions Engineer / SRE</h3>
-                                    <div class="text-sm font-mono text-github-purple">Tech Mahindra <span class="text-github-muted">(Client: Microsoft – Devices Engineering Services)</span></div>
-                                </div>
-                                <span class="text-xs font-mono bg-github-card border border-github-border px-3 py-1 rounded-full text-github-muted w-fit">2019 – 2024 | Redmond, WA</span>
-                            </div>
-                            <ul class="space-y-2 text-xs md:text-sm text-github-text list-disc list-inside">
-                                <li><strong>Custom Partner Integration:</strong> Engineered REST-based PowerShell automation for partner onboarding workflows, decreasing manual work-item migration effort by ~50%.</li>
-                                <li><strong>Solutions & Kubernetes Support:</strong> Built telemetry integrations via Azure Functions and Application Insights to monitor partner service health and diagnose AKS workload incidents.</li>
-                                <li><strong>Technical Relationship Management:</strong> Acted as primary liaison during critical outages, translating technical root-cause data into actionable mitigation playbooks for external partners.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Role 3 -->
-                    <div class="relative group">
-                        <span class="absolute -left-[31px] md:-left-[39px] top-1 w-5 h-5 rounded-full bg-github-green border-4 border-github-card"></span>
-                        <div class="bg-github-dark border border-github-border rounded-lg p-5 hover:border-github-green transition-all">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Forward Deployed Operations Lead / Problem Manager</h3>
-                                    <div class="text-sm font-mono text-github-green">Tech Mahindra <span class="text-github-muted">(Client: Microsoft – Enterprise Commerce)</span></div>
-                                </div>
-                                <span class="text-xs font-mono bg-github-card border border-github-border px-3 py-1 rounded-full text-github-muted w-fit">2013 – 2019 | Redmond, WA</span>
-                            </div>
-                            <ul class="space-y-2 text-xs md:text-sm text-github-text list-disc list-inside">
-                                <li><strong>Client Trend Analysis & RCA:</strong> Analyzed top incident talkers across 60+ production enterprise servers, delivering systemic fixes for high-impact commercial workloads.</li>
-                                <li><strong>Automated Client Workflows:</strong> Scripted database maintenance, alert routing, and performance monitoring solutions using T-SQL and SQL Agent.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Role 4 & 5 Combined -->
-                    <div class="relative group">
-                        <span class="absolute -left-[31px] md:-left-[39px] top-1 w-5 h-5 rounded-full bg-github-muted border-4 border-github-card"></span>
-                        <div class="bg-github-dark border border-github-border rounded-lg p-5 hover:border-github-muted transition-all space-y-4">
-                            <div>
-                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                                    <h3 class="text-base font-bold text-white">Software Engineer</h3>
-                                    <span class="text-xs font-mono text-github-muted">Quant Systems (Client: Hawkes Learning) | 2011 – 2013</span>
-                                </div>
-                                <p class="text-xs text-github-muted mt-1">Built web interfaces using C#, ASP.NET MVC, JavaScript, and SQL Server in an Agile delivery environment.</p>
-                            </div>
-
-                            <div class="border-t border-github-border/60 pt-3">
-                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                                    <h3 class="text-base font-bold text-white">Software Engineer</h3>
-                                    <span class="text-xs font-mono text-github-muted">Inex Soft (Client: Naval Materials Research Lab - DRDO) | 2010 – 2011</span>
-                                </div>
-                                <p class="text-xs text-github-muted mt-1">Developed experimental data management software using VB 6.0 and Oracle 10g with automated backup routines.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <section id="cli" class="bg-github-card border border-github-border rounded-xl p-6 glow-effect">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 bg-red-500 rounded-full inline-block"></span>
-                        <span class="w-3 h-3 bg-yellow-500 rounded-full inline-block"></span>
-                        <span class="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
-                        <span class="text-xs font-mono text-github-muted ml-2">fde-ops-cli v3.2 — bash — 80x24</span>
-                    </div>
-                    <span class="text-xs font-mono text-github-muted hidden md:inline">Type <code class="text-github-blue">help</code> for interactive commands</span>
-                </div>
-
-                <div class="bg-github-dark rounded-lg p-4 font-mono text-xs md:text-sm h-72 overflow-y-auto border border-github-border flex flex-col" id="terminalContainer" onclick="focusTerminalInput()">
-                    <div id="terminalOutput" class="space-y-1 text-github-text">
-                        <div>Welcome to <span class="text-github-blue font-bold">Ramachandra Rao Rachakonda's FDE Terminal Console</span>.</div>
-                        <div class="text-github-muted">Type <span class="text-github-green font-semibold">help</span> to view all available telemetry and operational commands.</div>
-                        <br>
-                    </div>
-                    <div class="flex items-center mt-auto pt-2 border-t border-github-border/40">
-                        <span class="text-github-green font-bold mr-2">fde@redmond-wa:~$</span>
-                        <input type="text" id="terminalInput" class="bg-transparent border-none outline-none text-white font-mono flex-grow text-xs md:text-sm" placeholder="Type a command..." onkeydown="handleTerminalKey(event)">
-                    </div>
-                </div>
-            </section>
-
-            <section id="awards" class="bg-github-card border border-github-border rounded-xl p-6">
-                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <i class="fas fa-award text-github-yellow"></i> Awards & Industry Honors
-                </h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-github-dark border border-github-border p-4 rounded-lg flex items-start space-x-3">
-                        <div class="p-2 bg-github-yellow/10 border border-github-yellow/30 text-github-yellow rounded-lg">
-                            <i class="fas fa-trophy text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-white text-sm">7x ACE Awards</h3>
-                            <p class="text-xs text-github-muted mt-1">Recognized for outstanding client platform engineering and technical execution across Microsoft business units.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-github-dark border border-github-border p-4 rounded-lg flex items-start space-x-3">
-                        <div class="p-2 bg-github-blue/10 border border-github-blue/30 text-github-blue rounded-lg">
-                            <i class="fas fa-star text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-white text-sm">2x Grand Salute - Livewire</h3>
-                            <p class="text-xs text-github-muted mt-1">Awarded for high-severity incident mitigation, rapid root cause identification, and zero-downtime releases.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-github-dark border border-github-border p-4 rounded-lg flex items-start space-x-3">
-                        <div class="p-2 bg-github-purple/10 border border-github-purple/30 text-github-purple rounded-lg">
-                            <i class="fas fa-graduation-cap text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-white text-sm">Academic Excellence</h3>
-                            <p class="text-xs text-github-muted mt-1">Master of Computer Applications (MCA) & Bachelor of Science (CS) from Andhra University.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <footer class="mt-auto border-t border-github-border bg-github-dark/80 py-6 px-4 text-center font-mono text-xs text-github-muted">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>© 2026 Ramachandra Rao Rachakonda. All rights reserved.</div>
-                <div class="flex items-center space-x-4">
-                    <a href="mailto:ramachandra.rachakonda@gmail.com" class="hover:text-github-blue transition-colors">Email</a>
-                    <span>•</span>
-                    <a href="#about" class="hover:text-github-blue transition-colors">Back to Top</a>
-                </div>
-            </div>
-        </footer>
-
-    </div>
-
-    <div id="photoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-github-card border border-github-border rounded-xl max-w-md w-full p-6 space-y-4">
-            <div class="flex items-center justify-between border-b border-github-border pb-3">
-                <h3 class="font-bold text-white text-sm font-mono flex items-center gap-2">
-                    <i class="fas fa-image text-github-blue"></i> Update Profile Picture
-                </h3>
-                <button onclick="closePhotoModal()" class="text-github-muted hover:text-white"><i class="fas fa-times"></i></button>
-            </div>
-
-            <div class="space-y-3 font-mono text-xs">
-                <div>
-                    <label class="block text-github-muted mb-1">Option 1: Upload Local File</label>
-                    <input type="file" id="localFileInput" accept="image/*" onchange="handleFileSelect(event)" class="w-full bg-github-dark border border-github-border p-2 rounded text-github-text">
-                </div>
-
-                <div class="text-center text-github-muted my-1">- OR -</div>
-
-                <div>
-                    <label class="block text-github-muted mb-1">Option 2: Enter Image URL</label>
-                    <input type="text" id="imageUrlInput" placeholder="https://example.com/avatar.jpg" class="w-full bg-github-dark border border-github-border p-2 rounded text-white outline-none focus:border-github-blue">
-                </div>
-            </div>
-
-            <div class="flex items-center justify-end space-x-2 pt-2 border-t border-github-border">
-                <button onclick="closePhotoModal()" class="px-3 py-1.5 bg-github-dark border border-github-border text-github-muted rounded text-xs font-mono">Cancel</button>
-                <button onclick="applyPhotoUrl()" class="px-3 py-1.5 bg-github-green hover:bg-github-greenHover text-white rounded text-xs font-mono font-bold">Apply Picture</button>
-            </div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">12+</div>
+          <div class="metric-lbl">Years Cloud & SRE Experience</div>
         </div>
-    </div>
+        <div class="metric-card">
+          <div class="metric-val">50M+</div>
+          <div class="metric-lbl">Daily Transactions Monitored</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">~50%</div>
+          <div class="metric-lbl">Toil Reduction via Automation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">9x</div>
+          <div class="metric-lbl">ACE & Livewire Recognition Awards</div>
+        </div>
+      </div>
+    </section>
 
-    <script>
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
+    <!-- SKILLS SECTION -->
+    <section id="skills">
+      <div class="section-head">
+        <span>01.</span> Technical Competencies & Proficiency
+      </div>
+      <div class="skills-container">
+        <div class="skill-card">
+          <div class="skill-info">
+            <span>Forward Deployed Operations & Integration</span>
+            <span>96%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 96%;"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-info">
+            <span>Azure, AKS & Cloud Infrastructure</span>
+            <span>94%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 94%;"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-info">
+            <span>Observability (KQL, Azure Monitor, Grafana)</span>
+            <span>98%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 98%;"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-info">
+            <span>Automation & Scripting (PowerShell, C#, Python)</span>
+            <span>92%</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 92%;"></div></div>
+        </div>
+      </div>
+    </section>
 
-        function resizeCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+    <!-- EXPERIENCE SECTION -->
+    <section id="experience">
+      <div class="section-head">
+        <span>02.</span> Professional Experience
+      </div>
+
+      <div class="timeline">
+        <!-- Role 1 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="role-title">Site Reliability Engineering Lead (FDE)</div>
+            <div class="company-meta">Tech Mahindra | Client: Microsoft Corporation – Commercial Engineering Services (2024 – Present)</div>
+            <ul class="bullet-list">
+              <li>Lead live-site reliability engineering and cloud operations for commercial platforms processing 50M+ daily transactions.</li>
+              <li>Design and optimize production Azure DevOps YAML and Ev2 deployment pipelines for automated global releases.</li>
+              <li>Architect scalable Azure environments using AKS, Terraform, and Azure DevOps aligning with SFI & S360 compliance standards.</li>
+              <li>Implement Playwright automated regression suites within CI/CD pipelines to elevate deployment stability.</li>
+            </ul>
+            <div class="tech-tags">
+              <span class="tag">Azure</span>
+              <span class="tag">AKS</span>
+              <span class="tag">KQL</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">Terraform</span>
+              <span class="tag">Ev2 Pipelines</span>
+              <span class="tag">SFI/S360</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role 2 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="role-title">Forward Deployed SRE / Systems Engineer</div>
+            <div class="company-meta">Tech Mahindra | Client: Microsoft Corporation – Devices Engineering Services (2019 – 2024)</div>
+            <ul class="bullet-list">
+              <li>Developed PowerShell REST API automation that streamlined Azure DevOps workflows, reducing toil by ~50%.</li>
+              <li>Engineered real-time monitoring solutions using Azure Functions, Application Insights, and Azure Monitor.</li>
+              <li>Provided production support for Kubernetes workloads, resolving pod health, deployment, and service issues.</li>
+            </ul>
+            <div class="tech-tags">
+              <span class="tag">PowerShell</span>
+              <span class="tag">Azure Functions</span>
+              <span class="tag">Kubernetes</span>
+              <span class="tag">Application Insights</span>
+              <span class="tag">C#</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role 3 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="role-title">SRE / Problem Manager</div>
+            <div class="company-meta">Tech Mahindra | Client: Microsoft Corporation – Enterprise Commerce (2013 – 2019)</div>
+            <ul class="bullet-list">
+              <li>Managed 60+ enterprise production servers, driving root cause analysis (RCA) and trend analysis for recurring incidents.</li>
+              <li>Automated SQL maintenance, deadlocks monitoring, and alerting workflows using T-SQL and SQL Agent.</li>
+            </ul>
+            <div class="tech-tags">
+              <span class="tag">SQL Server</span>
+              <span class="tag">T-SQL</span>
+              <span class="tag">Incident Command</span>
+              <span class="tag">RCA</span>
+              <span class="tag">Problem Management</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERMINAL SECTION -->
+    <section id="terminal">
+      <div class="section-head">
+        <span>03.</span> Interactive SRE CLI Console
+      </div>
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div class="term-btn red"></div>
+          <div class="term-btn yellow"></div>
+          <div class="term-btn green"></div>
+          <span style="color: #8b949e; font-size: 0.8rem; margin-left: 10px;">rrr-sre-cli -- bash</span>
+        </div>
+        <div class="terminal-body" id="termBody">
+          <div>Welcome to Ramachandra's SRE/FDE Shell. Type <span style="color: #58a6ff;">'help'</span> to view commands.</div>
+          <div id="termOutput"></div>
+          <div class="term-input-line">
+            <span style="color: #3fb950;">guest@rrr-fde:~$</span>
+            <input type="text" class="term-input" id="termInput" autofocus autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIMULATOR SECTION -->
+    <section id="simulator">
+      <div class="section-head">
+        <span>04.</span> Live Incident Mitigation Simulator
+      </div>
+      <div class="sim-card">
+        <p style="margin-bottom: 15px;">Simulate an active high-severity live-site outage to trigger automated FDE/SRE mitigation workflows:</p>
+        <button class="sim-btn" id="simBtn" onclick="runIncidentSimulation()">Trigger Incident Simulation</button>
+        <div id="simConsole" style="margin-top: 20px; font-family: var(--font-code); font-size: 0.88rem; color: #8b949e;"></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 Ramachandra Rao Rachakonda. Built for High Availability & Scale.</p>
+    </footer>
+  </div>
+
+  <script>
+    /* MATRIX CHARACTER DECODING INTRO */
+    const targetName = "Ramachandra Rao Rachakonda";
+    const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+    const nameEl = document.getElementById('nameText');
+    let iteration = 0;
+
+    function decodeName() {
+      const interval = setInterval(() => {
+        nameEl.innerText = targetName.split("").map((letter, index) => {
+          if (index < iteration) return targetName[index];
+          return glyphs[Math.floor(Math.random() * glyphs.length)];
+        }).join("");
+
+        if (iteration >= targetName.length) clearInterval(interval);
+        iteration += 1 / 3;
+      }, 30);
+    }
+    window.addEventListener('load', decodeName);
+
+    /* BACKGROUND PARTICLES */
+    const pCanvas = document.getElementById('particleCanvas');
+    const pCtx = pCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      pCanvas.width = window.innerWidth;
+      pCanvas.height = window.innerHeight;
+      cCanvas.width = window.innerWidth;
+      cCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * pCanvas.width;
+        this.y = Math.random() * pCanvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.6;
+        this.speedY = (Math.random() - 0.5) * 0.6;
+        this.color = Math.random() > 0.5 ? '#58a6ff' : '#39c5bb';
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > pCanvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > pCanvas.height) this.speedY *= -1;
+      }
+      draw() {
+        pCtx.fillStyle = this.color;
+        pCtx.globalAlpha = 0.4;
+        pCtx.beginPath();
+        pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        pCtx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 60; i++) particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+
+    /* CURSOR TRAIL */
+    const cCanvas = document.getElementById('cursorCanvas');
+    const cCtx = cCanvas.getContext('2d');
+    let cursorParticles = [];
+
+    window.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 2; i++) {
+        cursorParticles.push({
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 3 + 1,
+          alpha: 1,
+          color: Math.random() > 0.5 ? '#3fb950' : '#58a6ff',
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5
+        });
+      }
+    });
+
+    function animateCursor() {
+      cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+      cursorParticles.forEach((p, idx) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.02;
+        cCtx.fillStyle = p.color;
+        cCtx.globalAlpha = Math.max(p.alpha, 0);
+        cCtx.beginPath();
+        cCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        cCtx.fill();
+        if (p.alpha <= 0) cursorParticles.splice(idx, 1);
+      });
+      requestAnimationFrame(animateCursor);
+    }
+
+    /* NAME CLICK BURST */
+    document.getElementById('nameContainer').addEventListener('click', (e) => {
+      for (let i = 0; i < 30; i++) {
+        cursorParticles.push({
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 5 + 2,
+          alpha: 1,
+          color: ['#3fb950', '#58a6ff', '#a371f7', '#39c5bb'][Math.floor(Math.random() * 4)],
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6
+        });
+      }
+    });
+
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+    animateCursor();
+
+    /* TERMINAL LOGIC */
+    const termInput = document.getElementById('termInput');
+    const termOutput = document.getElementById('termOutput');
+
+    termInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = termInput.value.trim().toLowerCase();
+        termInput.value = '';
+        appendTermLine(`guest@rrr-fde:~$ ${cmd}`, '#ffffff');
+        
+        switch(cmd) {
+          case 'help':
+            appendTermLine('Available commands: sre-status, skills, contact, clear', '#58a6ff');
+            break;
+          case 'sre-status':
+            appendTermLine('[SYSTEM OK] All commercial cluster nodes operational. SLO Attainment: 99.99%', '#3fb950');
+            break;
+          case 'skills':
+            appendTermLine('Azure, AKS, Observability (KQL), PowerShell, C#, Terraform, Ev2 Pipelines', '#a371f7');
+            break;
+          case 'contact':
+            appendTermLine('Email: ramachandra.rachakonda@gmail.com | Phone: (425) 628-7173', '#39c5bb');
+            break;
+          case 'clear':
+            termOutput.innerHTML = '';
+            break;
+          default:
+            appendTermLine(`Command not recognized: '${cmd}'. Type 'help' for available commands.`, '#f85149');
         }
+      }
+    });
 
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+    function appendTermLine(text, color) {
+      const line = document.createElement('div');
+      line.style.color = color;
+      line.style.marginTop = '4px';
+      line.innerText = text;
+      termOutput.appendChild(line);
+      document.getElementById('termBody').scrollTop = document.getElementById('termBody').scrollHeight;
+    }
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.radius = Math.random() * 1.5 + 1;
-            }
+    /* INCIDENT SIMULATOR */
+    function runIncidentSimulation() {
+      const consoleEl = document.getElementById('simConsole');
+      const btn = document.getElementById('simBtn');
+      btn.disabled = true;
+      consoleEl.innerHTML = '';
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
+      const logs = [
+        { t: '[19:24:01] 🚨 HIGH-SEV ALERT: Latency spike detected on Commercial API Gateway (p99 > 850ms).', c: '#f85149' },
+        { t: '[19:24:03] 🔍 Automated KQL Query Executed: Identifying degraded AKS pod instances...', c: '#58a6ff' },
+        { t: '[19:24:05] ⚡ Executing Livesite Remediation Playbook: Scaling AKS node pool + restarting failed pods.', c: '#d29922' },
+        { t: '[19:24:08] ✅ Health Check Passed: Traffic rerouted. Latency normalized to 42ms. Incident Mitigated!', c: '#3fb950' }
+      ];
 
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#58a6ff';
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < 45; i++) {
-            particles.push(new Particle());
-        }
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 120) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(88, 166, 255, ${0.15 - dist / 1200})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animateCanvas);
-        }
-        animateCanvas();
-
-        function initHeatmap() {
-            const grid = document.getElementById('heatmapGrid');
-            const totalCells = 52 * 7; // 52 weeks
-            grid.innerHTML = '';
-
-            for (let i = 0; i < totalCells; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'w-2.5 h-2.5 rounded-sm ';
-                
-                // Generate realistic contribution density
-                const rand = Math.random();
-                if (rand > 0.85) cell.className += 'bg-[#39d353]';
-                else if (rand > 0.65) cell.className += 'bg-[#26a641]';
-                else if (rand > 0.45) cell.className += 'bg-[#006d32]';
-                else if (rand > 0.25) cell.className += 'bg-[#0e4429]';
-                else cell.className += 'bg-[#161b22] border border-github-border/40';
-
-                grid.appendChild(cell);
-            }
-        }
-        initHeatmap();
-
-        function filterSkills(category) {
-            const cards = document.querySelectorAll('.skill-card');
-            const btns = document.querySelectorAll('.skill-filter-btn');
-
-            btns.forEach(btn => {
-                btn.className = 'skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-dark text-github-muted border border-github-border hover:border-github-blue';
-            });
-
-            event.target.className = 'skill-filter-btn px-3 py-1 text-xs font-mono rounded-md bg-github-blue text-github-dark font-bold border border-github-blue';
-
-            cards.forEach(card => {
-                if (category === 'all' || card.classList.contains(category)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        let activeIncident = null;
-
-        function triggerIncident(type) {
-            const logs = document.getElementById('simulatorLogs');
-            const statusBadge = document.getElementById('simulatorStatusBadge');
-            const mitigateBtn = document.getElementById('mitigateBtn');
-            const sloMetric = document.getElementById('sloMetric');
-            const latencyMetric = document.getElementById('latencyMetric');
-
-            activeIncident = type;
-
-            if (type === 'aks_latency') {
-                statusBadge.className = "text-xs font-mono px-3 py-1 rounded-full bg-github-red/20 text-github-red border border-github-red/30 flex items-center gap-1.5 pulse-red";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-github-red animate-ping"></span> ALERT: High AKS Gateway Queue`;
-
-                sloMetric.innerText = '98.20%';
-                sloMetric.className = 'text-github-red';
-                latencyMetric.innerText = '480ms';
-                latencyMetric.className = 'text-github-red';
-
-                logs.innerHTML += `<div class="text-github-red">[ALERT 17:21:02] KQL Alert Triggered: Commercial Gateway latency > 400ms across 12 pods.</div>`;
-                logs.innerHTML += `<div class="text-github-yellow">[TELEMETRY] Azure Monitor detected TCP socket exhaustion in pod cluster eastus-prod-02.</div>`;
-            } else if (type === 'partner_auth') {
-                statusBadge.className = "text-xs font-mono px-3 py-1 rounded-full bg-github-yellow/20 text-github-yellow border border-github-yellow/30 flex items-center gap-1.5";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-github-yellow animate-ping"></span> WARNING: Auth Protocol Timeout`;
-
-                sloMetric.innerText = '99.10%';
-                sloMetric.className = 'text-github-yellow';
-                latencyMetric.innerText = '180ms';
-                latencyMetric.className = 'text-github-yellow';
-
-                logs.innerHTML += `<div class="text-github-yellow">[WARN 17:21:15] OAuth Token Renewal failure rate elevated to 4.2% for external partner tenant.</div>`;
-            } else if (type === 'sql_deadlock') {
-                statusBadge.className = "text-xs font-mono px-3 py-1 rounded-full bg-github-red/20 text-github-red border border-github-red/30 flex items-center gap-1.5 pulse-red";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-github-red animate-ping"></span> ALERT: SQL Lock Escalation`;
-
-                sloMetric.innerText = '95.40%';
-                sloMetric.className = 'text-github-red';
-                latencyMetric.innerText = '1200ms';
-                latencyMetric.className = 'text-github-red';
-
-                logs.innerHTML += `<div class="text-github-red">[ALERT 17:21:30] Azure SQL Enterprise Commerce DB experiencing high deadlock count on checkout table.</div>`;
-            }
-
-            mitigateBtn.disabled = false;
-            mitigateBtn.className = "w-full py-2.5 px-4 bg-github-green hover:bg-github-greenHover text-white font-mono text-xs rounded font-bold cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg";
-            logs.scrollTop = logs.scrollHeight;
-        }
-
-        function applyMitigation() {
-            const logs = document.getElementById('simulatorLogs');
-            const statusBadge = document.getElementById('simulatorStatusBadge');
-            const mitigateBtn = document.getElementById('mitigateBtn');
-            const sloMetric = document.getElementById('sloMetric');
-            const latencyMetric = document.getElementById('latencyMetric');
-
-            logs.innerHTML += `<div class="text-github-blue">[MITIGATION] Executing FDE automated runbook for scenario: ${activeIncident}...</div>`;
-
-            setTimeout(() => {
-                logs.innerHTML += `<div class="text-github-green">[SUCCESS] Auto-scaled node replica pool, cleared stale sockets, and applied query hint.</div>`;
-                logs.innerHTML += `<div class="text-github-muted">[SYSTEM] All service metrics returned to normal baseline. SLO intact.</div>`;
-
-                statusBadge.className = "text-xs font-mono px-3 py-1 rounded-full bg-github-green/20 text-github-green border border-github-green/30 flex items-center gap-1.5";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-github-green"></span> Live-Site Status: NOMINAL`;
-
-                sloMetric.innerText = '99.99%';
-                sloMetric.className = 'text-github-green';
-                latencyMetric.innerText = '24ms';
-                latencyMetric.className = 'text-github-green';
-
-                mitigateBtn.disabled = true;
-                mitigateBtn.className = "w-full py-2.5 px-4 bg-github-border text-github-muted font-mono text-xs rounded font-bold cursor-not-allowed transition-all flex items-center justify-center gap-2";
-                logs.scrollTop = logs.scrollHeight;
-                activeIncident = null;
-            }, 1000);
-        }
-
-        function focusTerminalInput() {
-            document.getElementById('terminalInput').focus();
-        }
-
-        function handleTerminalKey(e) {
-            if (e.key === 'Enter') {
-                const input = document.getElementById('terminalInput');
-                const cmd = input.value.trim().toLowerCase();
-                const output = document.getElementById('terminalOutput');
-
-                output.innerHTML += `<div><span class="text-github-green font-bold">fde@redmond-wa:~$</span> <span class="text-white">${input.value}</span></div>`;
-
-                executeCommand(cmd, output);
-
-                input.value = '';
-                const container = document.getElementById('terminalContainer');
-                container.scrollTop = container.scrollHeight;
-            }
-        }
-
-        function executeCommand(cmd, output) {
-            switch(cmd) {
-                case 'help':
-                    output.innerHTML += `<div class="text-github-muted pl-4">
-                        Available commands:<br>
-                        - <span class="text-github-blue">fde-client-status</span>: Display partner integration health<br>
-                        - <span class="text-github-blue">kubectl get pods -n production</span>: List commercial cluster pods<br>
-                        - <span class="text-github-blue">az monitor query</span>: Run live KQL metric diagnostic<br>
-                        - <span class="text-github-blue">cat experience.json</span>: Dump technical experience summary<br>
-                        - <span class="text-github-blue">contact</span>: Print developer contact details<br>
-                        - <span class="text-github-blue">clear</span>: Clear terminal window
-                    </div>`;
-                    break;
-                case 'fde-client-status':
-                    output.innerHTML += `<div class="text-github-green pl-4">
-                        [CLIENT STATUS REPORT]<br>
-                        Microsoft Commercial Engineering Services ..... ONLINE (99.99%)<br>
-                        Devices Partner Onboarding Pipeline .......... HEALTHY (0 Queue)<br>
-                        Ev2 Deployment Ring 3 Rollouts ............... IN PROGRESS (Zero Downtime)
-                    </div>`;
-                    break;
-                case 'kubectl get pods -n production':
-                    output.innerHTML += `<div class="text-github-text font-mono pl-4">
-                        NAME                                  READY   STATUS    RESTARTS   AGE<br>
-                        commerce-api-gateway-7f8d9b4c-x1     1/1     Running   0          14d<br>
-                        partner-auth-service-5896cd-z9        1/1     Running   0          22d<br>
-                        telemetry-kql-collector-12ab-m3       1/1     Running   0          45d
-                    </div>`;
-                    break;
-                case 'az monitor query':
-                    output.innerHTML += `<div class="text-github-purple pl-4">
-                        KQL Query Executing...<br>
-                        Requests | summarize AvgLatency=avg(duration) by bin(timestamp, 5m)<br>
-                        Result: 24.3ms latency average across 50M transactions.
-                    </div>`;
-                    break;
-                case 'cat experience.json':
-                    output.innerHTML += `<div class="text-github-yellow pl-4">
-                        {<br>
-                          &nbsp;&nbsp;"name": "Ramachandra Rao Rachakonda",<br>
-                          &nbsp;&nbsp;"role": "Forward Deployed Engineer / Senior SRE Lead",<br>
-                          &nbsp;&nbsp;"msft_years": 13,<br>
-                          &nbsp;&nbsp;"location": "Redmond, WA",<br>
-                          &nbsp;&nbsp;"awards": ["7x ACE Awards", "2x Grand Salute"]<br>
-                        }
-                    </div>`;
-                    break;
-                case 'contact':
-                    output.innerHTML += `<div class="text-github-text pl-4">
-                        Email: <a href="mailto:ramachandra.rachakonda@gmail.com" class="text-github-blue underline">ramachandra.rachakonda@gmail.com</a><br>
-                        Phone: (425) 628-7173<br>
-                        Location: Redmond, WA
-                    </div>`;
-                    break;
-                case 'clear':
-                    output.innerHTML = '';
-                    break;
-                default:
-                    if (cmd !== '') {
-                        output.innerHTML += `<div class="text-github-red pl-4">Command not recognized: '${cmd}'. Type 'help' for available commands.</div>`;
-                    }
-                    break;
-            }
-        }
-
-        function openPhotoModal() {
-            document.getElementById('photoModal').classList.remove('hidden');
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photoModal').classList.add('hidden');
-        }
-
-        function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('profileImage').src = event.target.result;
-                    closePhotoModal();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function applyPhotoUrl() {
-            const url = document.getElementById('imageUrlInput').value.trim();
-            if (url) {
-                document.getElementById('profileImage').src = url;
-                closePhotoModal();
-            }
-        }
-    </script>
+      logs.forEach((log, index) => {
+        setTimeout(() => {
+          const div = document.createElement('div');
+          div.style.color = log.c;
+          div.style.marginTop = '6px';
+          div.innerText = log.t;
+          consoleEl.appendChild(div);
+          if (index === logs.length - 1) btn.disabled = false;
+        }, index * 1200);
+      });
+    }
+  </script>
 </body>
 </html>
